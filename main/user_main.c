@@ -24,24 +24,6 @@ void app_main(void)
     // Give the Semaphore
     xSemaphoreGive(mutex_handle);
 
-    /* Unit Testing: LED_ON Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 0);                                           // stub for setting GPIO2 (LED) to 0 (OFF)
-    xTaskCreate(led_on, "led_on_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task to turn GPIO2 (LED) to 1 (ON)
-    if (task_handle != NULL)                                                     // Use task handler to stop running RTOS task
-    {
-        vTaskSuspend(task_handle);
-    }
-    gpio_set_level(GPIO_OUTPUT_IO, 0); // stub for setting GPIO2 (LED) to 0 (OFF)
-
-    /* Unit Testing: LED_OFF Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 1);                                             // stub for setting GPIO2 (LED) to 1 (ON)
-    vTaskDelay(2000 / portTICK_PERIOD_MS);                                         // delay for 2 seconds
-    xTaskCreate(led_off, "led_off_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task for turning off the LED
-    if (task_handle != NULL)                                                       // Use task handler to stop running RTOS task
-    {
-        vTaskSuspend(task_handle);
-    }
-
     /* Unit Testing: Status_Message Function */
     gpio_set_level(GPIO_OUTPUT_IO, 1);                                                           // stub for setting GPIO2 (LED) to 1 (ON)
     xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task function to call status message function
@@ -51,14 +33,6 @@ void app_main(void)
     }
     gpio_set_level(GPIO_OUTPUT_IO, 0);                                                           // stub for setting GPIO2 (LED) to 0 (OFF)
     xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task function to call status message function
-
-    /*Integration & Verification Testing */
-    if (mutex_handle != NULL){
-        xTaskCreate(led_on,"led_on_task",1024,NULL,LOW_PRIORITY,NULL); // RTOS task instance to set GPIO2 to HIGH
-        xTaskCreate(led_off,"led_off_task",1024,NULL,MEDIUM_PRIORITY,NULL); // RTOS task instance to set GPIO2 to LOW
-    }
-    xTaskCreate(status_message,"status_message_task",1024,NULL,HIGH_PRIORITY,NULL); // RTOS task instance to display status of GPIO2 pin
-
 
     // Heap memory management
     for (;;)
