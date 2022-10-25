@@ -1,6 +1,7 @@
 #include "user_main.h"
 
 static const char *TEST = "Test";
+static const char *TASK = "TASK";
 
 SemaphoreHandle_t mutex_handle = NULL; // Handler for Mutex -> thing that controls which function access resource (GPIO2)
 
@@ -23,34 +24,6 @@ void app_main(void)
 
     // Give the Semaphore
     xSemaphoreGive(mutex_handle);
-
-    /* Unit Testing: LED_ON Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 0);                                           // stub for setting GPIO2 (LED) to 0 (OFF)
-    xTaskCreate(led_on, "led_on_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task to turn GPIO2 (LED) to 1 (ON)
-    if (task_handle != NULL)                                                     // Use task handler to stop running RTOS task
-    {
-        vTaskSuspend(task_handle);
-    }
-    gpio_set_level(GPIO_OUTPUT_IO, 0); // stub for setting GPIO2 (LED) to 0 (OFF)
-
-    /* Unit Testing: LED_OFF Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 1);                                             // stub for setting GPIO2 (LED) to 1 (ON)
-    vTaskDelay(2000 / portTICK_PERIOD_MS);                                         // delay for 2 seconds
-    xTaskCreate(led_off, "led_off_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task for turning off the LED
-    if (task_handle != NULL)                                                       // Use task handler to stop running RTOS task
-    {
-        vTaskSuspend(task_handle);
-    }
-
-    /* Unit Testing: Status_Message Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 1);                                                           // stub for setting GPIO2 (LED) to 1 (ON)
-    xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task function to call status message function
-    if (task_handle != NULL)                                                                     // Use task handler to delete running RTOS task
-    {
-        vTaskDelete(task_handle);
-    }
-    gpio_set_level(GPIO_OUTPUT_IO, 0);                                                           // stub for setting GPIO2 (LED) to 0 (OFF)
-    xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task function to call status message function
 
     /*Integration & Verification Testing */
     if (mutex_handle != NULL){
@@ -103,7 +76,7 @@ static void led_on(void *pvParam)
             if (xSemaphoreTake(mutex_handle, (TickType_t)15) == pdTRUE)
             {
                 // Obtained Mutex...
-                ESP_LOGI(TEST, "Turning LED ON\n");
+                ESP_LOGI(TASK, "Turning LED ON\n");
                 gpio_set_level(GPIO_OUTPUT_IO, 1);
                 break;
             }
@@ -130,7 +103,7 @@ static void led_off(void *pvParam)
         {
             if (xSemaphoreTake(mutex_handle, (TickType_t)15) == pdTRUE)
             {
-                ESP_LOGI(TEST, "Turning LED OFF\n");
+                ESP_LOGI(TASK, "Turning LED OFF\n");
                 gpio_set_level(GPIO_OUTPUT_IO, 0);
                 break;
             }
