@@ -7,7 +7,7 @@ SemaphoreHandle_t mutex_handle = NULL; // Handler for Mutex -> thing that contro
 
 TaskHandle_t task_handle = NULL;
 
-void app_main(void)
+void integration_testing(void *pvParam)
 {
     gpio_config_t io_conf; // struct for configuring gpio pins
 
@@ -26,13 +26,21 @@ void app_main(void)
     xSemaphoreGive(mutex_handle);
 
     /*Integration & Verification Testing */
-    if (mutex_handle != NULL){
-        xTaskCreate(led_on,"led_on_task",1024,NULL,LOW_PRIORITY,NULL); // RTOS task instance to set GPIO2 to HIGH
-        xTaskCreate(led_off,"led_off_task",1024,NULL,MEDIUM_PRIORITY,NULL); // RTOS task instance to set GPIO2 to LOW
+    if (mutex_handle != NULL)
+    {
+        led_on(NULL);
+        led_off(NULL);
+        // xTaskCreate(led_on, "led_on_task", 1024, NULL, LOW_PRIORITY, NULL);      // RTOS task instance to set GPIO2 to HIGH
+        // xTaskCreate(led_off, "led_off_task", 1024, NULL, MEDIUM_PRIORITY, NULL); // RTOS task instance to set GPIO2 to LOW
     }
-    xTaskCreate(status_message,"status_message_task",1024,NULL,HIGH_PRIORITY,NULL); // RTOS task instance to display status of GPIO2 pin
+    status_message(NULL);
+    // xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, NULL); // RTOS task instance to display status of GPIO2 pin
 
+}
 
+void app_main(void)
+{
+    integration_testing(NULL);
     // Heap memory management
     for (;;)
         ;
@@ -62,7 +70,7 @@ static void status_message(void *pvParam)
 {
     while (1)
     {
-        ESP_LOGI(TEST, "The LED Status: %d\n", gpio_get_level(GPIO_OUTPUT_IO));
+        ESP_LOGI(TASK, "The LED Status: %d\n", gpio_get_level(GPIO_OUTPUT_IO));
         vTaskDelay(1000 / portTICK_PERIOD_MS); // delay for 1 second
     }
 }
