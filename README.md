@@ -1,5 +1,5 @@
 # General Discussion on Unit Testing 
-For unit testing of the led_on function, I created my own test driver function which configures the GPIO pin and stubs the pin with the function. It checks the value of the pin and returns an appropriate message to inform if the function was successfully executed or not.
+For unit testing of the led_off function, I created my own test driver function which configures the GPIO pin and stubs the pin with the function. It checks the value of the pin and returns an appropriate message to inform if the function was successfully executed or not.
 
 Creating my own driver function was beneficial to me as a student as it allowed me to actively think about the steps required to execute the test. Additionally, it allowed me to fully explore more into the specific ESP8266_RTOS_SDK functions that can be used to execute the testing.
 
