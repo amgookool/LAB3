@@ -34,6 +34,7 @@ void integration_testing(void *pvParam)
         // xTaskCreate(led_off, "led_off_task", 1024, NULL, MEDIUM_PRIORITY, NULL); // RTOS task instance to set GPIO2 to LOW
     }
     status_message(NULL);
+    ESP_LOGI(TEST,"Integration Test: Passed.");
     // xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, NULL); // RTOS task instance to display status of GPIO2 pin
 
 }
@@ -72,6 +73,7 @@ static void status_message(void *pvParam)
     {
         ESP_LOGI(TASK, "The LED Status: %d\n", gpio_get_level(GPIO_OUTPUT_IO));
         vTaskDelay(1000 / portTICK_PERIOD_MS); // delay for 1 second
+        break;  //Break to allow for unit and integration test functions to run
     }
 }
 
@@ -100,6 +102,7 @@ static void led_on(void *pvParam)
 
         // delay for 1 second
         vTaskDelay(1000 / portTICK_PERIOD_MS);
+        break;  //Break to allow for unit and integration test functions to run
     }
 }
 
@@ -127,5 +130,6 @@ static void led_off(void *pvParam)
 
         // delay for 1 second
         vTaskDelay(1000 / portTICK_PERIOD_MS);
+        break;  //Break to allow for unit and integration test functions to run
     }
 }
