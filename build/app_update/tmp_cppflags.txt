@@ -1,1 +1,1 @@
-49a2e50-dirty gpio v3.4-71-g7085cc76-dirty
+6fcbfb5-dirty gpio v3.4-71-g7085cc76-dirty

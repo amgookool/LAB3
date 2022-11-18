@@ -5,9 +5,7 @@ static const char *TASK = "TASK";
 
 SemaphoreHandle_t mutex_handle = NULL; // Handler for Mutex -> thing that controls which function access resource (GPIO2)
 
-TaskHandle_t task_handle = NULL;
-
-void integration_testing(void *pvParam)
+void verification_testing(void *pvParam)
 {
     gpio_config_t io_conf; // struct for configuring gpio pins
 
@@ -25,22 +23,21 @@ void integration_testing(void *pvParam)
     // Give the Semaphore
     xSemaphoreGive(mutex_handle);
 
-    /*Integration & Verification Testing */
+    /*Verification Testing */
+    ESP_LOGI(TEST,"Executing Verification Test");
     if (mutex_handle != NULL)
     {
-        led_on(NULL);
-        led_off(NULL);
-        // xTaskCreate(led_on, "led_on_task", 1024, NULL, LOW_PRIORITY, NULL);      // RTOS task instance to set GPIO2 to HIGH
-        // xTaskCreate(led_off, "led_off_task", 1024, NULL, MEDIUM_PRIORITY, NULL); // RTOS task instance to set GPIO2 to LOW
+        xTaskCreate(led_on, "led_on_task", 1024, NULL, LOW_PRIORITY, NULL);      // RTOS task instance to set GPIO2 to HIGH
+        xTaskCreate(led_off, "led_off_task", 1024, NULL, MEDIUM_PRIORITY, NULL); // RTOS task instance to set GPIO2 to LOW
     }
-    status_message(NULL);
-    // xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, NULL); // RTOS task instance to display status of GPIO2 pin
+    xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, NULL); // RTOS task instance to display status of GPIO2 pin
 
+    ESP_LOGI(TEST,"Ending Verification Test");
 }
 
 void app_main(void)
 {
-    integration_testing(NULL);
+    verification_testing(NULL);
     // Heap memory management
     for (;;)
         ;
