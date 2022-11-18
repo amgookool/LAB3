@@ -4,10 +4,11 @@ static const char *TEST = "Test";
 
 SemaphoreHandle_t mutex_handle = NULL; // Handler for Mutex -> thing that controls which function access resource (GPIO2)
 
-TaskHandle_t task_handle = NULL;
-
-void app_main(void)
+void unit_test_led_off(void *pvParam)
 {
+    esp_err_t ret;
+    int pin_status;
+
     gpio_config_t io_conf; // struct for configuring gpio pins
 
     // GPIO 2 IO Configuration
@@ -24,16 +25,27 @@ void app_main(void)
     // Give the Semaphore
     xSemaphoreGive(mutex_handle);
 
-    /* Unit Testing: LED_OFF Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 1);                                             // stub for setting GPIO2 (LED) to 1 (ON)
-    vTaskDelay(2000 / portTICK_PERIOD_MS);                                         // delay for 2 seconds
-    xTaskCreate(led_off, "led_off_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task for turning off the LED
-    if (gpio_get_level(GPIO_OUTPUT_IO) == 0 && task_handle != NULL)                // Check for LOW on GPIO and use task handler to stop running RTOS task
+    // Setting GPIO Pin to 1
+    ret = gpio_set_level(GPIO_OUTPUT_IO, 1);
+    if (ret == ESP_OK)
     {
-        ESP_LOGI(TEST,"Task was successfully triggered\n");
-        vTaskSuspend(task_handle);
+        led_off(NULL);
     }
+    pin_status = gpio_get_level(GPIO_OUTPUT_IO);
 
+    if (pin_status == 0)
+    {
+        ESP_LOGI(TEST, "Unit Testing: LED_OFF Passed!");
+    }
+    else
+    {
+        ESP_LOGI(TEST, "Unit Testing: LED_OFF Failed!");
+    }
+}
+
+void app_main(void)
+{
+    unit_test_led_off(NULL);
     // Heap memory management
     for (;;)
         ;
@@ -120,5 +132,7 @@ static void led_off(void *pvParam)
 
         // delay for 1 second
         vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+        break; // break for unit and integration testing functions to run
     }
 }
