@@ -34,7 +34,7 @@ void unit_test_led_on(void *pvParam)
     
     if (pin_status == 0)
     {
-        ESP_LOGI(TEST, "Unit Testing: LED_ON Function Passed!");
+        ESP_LOGI(TEST, "Unit Testing: LED_ON Function Failed!");
     }
     else
     {
