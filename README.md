@@ -1,18 +1,3 @@
-# Integration and Verfication Testing
-
-Since the requirements were established in advance and implementation was completed to satisfy the requirements, the integration and verification test were conducted simultaneously.
-
-## Integration Testing
-
-The integration test evaluated the functions being called and not the delays being called.
-
-- **Purpose**: Ensures the sequential calling of appropiate functions.
-- **Pre-Conditions**: 3V power supply to ESP8266-01 device; Operational LED.
-- **Test Input**: Conifgured GPIO2 pin, call led_on, call status_msg, call led_off
-- **Expected**: LED light turns on, status message is displayed, LED turns off and a status message is diplayed.
-- **Test Results**: LED light turns on, status message is displayed (shows 1), LED turns off, a status message is diplayed (shows 0).
-- **Test Result Evidence**: lab3_IntegrationVerification_816008385.out
-
 ## Verification Testing
 
 The verification test evaluated the delay times used in each of the functions called. This test is conducted to verify the system meeting its specified requirements.
@@ -26,7 +11,16 @@ The verification test evaluated the delay times used in each of the functions ca
 1. Each task has its own Priority Level.
 
 - **Purpose**: Ensures that the system meets its requirements.
-- **Test Input**: Conifgured GPIO2 pin, call 'led_on' function, call 'status_message' function, call 'led_off' function
+
+- **Test Input**: Configured GPIO2 pin, call 'led_on' function, call 'status_message' function, call 'led_off' function
+
 - **Expected**: LED light turns on for 1.5 seconds, status message shows a value of 1 for 1 second, LED light turns off for 1.5 seconds, status message displayed shows a value of 0 for 1 second.
+
 - **Test Results**: LED light turns on for 1.5 seconds, status message displayed value of 1 for 1 second, LED light turns off for 1.5 seconds, status message displayed value of 0 for 1 second.
-- **Test Result Evidence**: lab3_IntegrationVerification_816008385.out
+
+- **Test Result Evidence**: lab3_VerificationTesting_816008385.out
+
+For verifying if the system met its requirements, a camera and a stop watch were used. 
+The camera was used to video the execution of the program during runtime. This gave visual verification of requirements. 
+
+The stopwatch along with the video can be used to verify the active wait for 0.5 seconds. However, it should be noted that there may be human error when recording the time of the active wait when switching who has access to the GPIO pin resource.  
