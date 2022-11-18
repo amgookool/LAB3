@@ -4,10 +4,11 @@ static const char *TEST = "Test";
 
 SemaphoreHandle_t mutex_handle = NULL; // Handler for Mutex -> thing that controls which function access resource (GPIO2)
 
-TaskHandle_t task_handle = NULL;
-
-void app_main(void)
+void unit_test_status_message(void *pvParam)
 {
+    esp_err_t ret;
+    int pin_status;
+
     gpio_config_t io_conf; // struct for configuring gpio pins
 
     // GPIO 2 IO Configuration
@@ -24,16 +25,28 @@ void app_main(void)
     // Give the Semaphore
     xSemaphoreGive(mutex_handle);
 
-    /* Unit Testing: Status_Message Function */
-    gpio_set_level(GPIO_OUTPUT_IO, 1);                                                           // stub for setting GPIO2 (LED) to 1 (ON)
-    xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task function to call status message function
-    if (task_handle != NULL)                                                                     // Use task handler to delete running RTOS task
+    // Testing if pin is status is 0
+    ret = gpio_set_level(GPIO_OUTPUT_IO, 0);
+    if (ret == ESP_OK)
     {
-        vTaskDelete(task_handle);
+        status_message(NULL);
+        pin_status = gpio_get_level(GPIO_OUTPUT_IO);
+        ESP_LOGI(TEST, "Pin Status Function Call: %d", pin_status);
     }
-    gpio_set_level(GPIO_OUTPUT_IO, 0);                                                           // stub for setting GPIO2 (LED) to 0 (OFF)
-    xTaskCreate(status_message, "status_message_task", 1024, NULL, HIGH_PRIORITY, &task_handle); // RTOS task function to call status message function
 
+    // Testing if pin is status is 1
+    ret = gpio_set_level(GPIO_OUTPUT_IO, 1);
+    if (ret == ESP_OK)
+    {
+        status_message(NULL);
+        pin_status = gpio_get_level(GPIO_OUTPUT_IO);
+        ESP_LOGI(TEST, "Pin Status Function Call: %d", pin_status);
+    }
+}
+
+void app_main(void)
+{
+    unit_test_status_message(NULL);
     // Heap memory management
     for (;;)
         ;
@@ -65,6 +78,7 @@ static void status_message(void *pvParam)
     {
         ESP_LOGI(TEST, "The LED Status: %d\n", gpio_get_level(GPIO_OUTPUT_IO));
         vTaskDelay(1000 / portTICK_PERIOD_MS); // delay for 1 second
+        break;                                 //  //Break to allow for unit and integration test functions to run
     }
 }
 
